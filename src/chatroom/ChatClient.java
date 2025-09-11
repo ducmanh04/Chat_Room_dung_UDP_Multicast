@@ -1,22 +1,22 @@
 package chatroom;
 
-import java.io.*;
 import java.net.*;
 import java.util.Scanner;
 
 public class ChatClient {
-    private static final String MULTICAST_ADDRESS = "230.0.0.0"; // địa chỉ multicast
-    private static final int PORT = 4446;
+    private static final String SERVER_ADDRESS = "localhost"; // có thể đổi sang IP Server thật
+    private static final int SERVER_PORT = 4446;
 
     public static void main(String[] args) {
         try {
-            InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
-            MulticastSocket socket = new MulticastSocket(PORT);
+            DatagramSocket socket = new DatagramSocket();
+            InetAddress serverAddr = InetAddress.getByName(SERVER_ADDRESS);
 
-            // Tham gia nhóm multicast
-            socket.joinGroup(group);
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Nhập tên của bạn: ");
+            String name = scanner.nextLine();
 
-            // Luồng nhận tin nhắn
+            // Luồng nhận tin nhắn từ Server
             Thread receiver = new Thread(() -> {
                 byte[] buffer = new byte[1024];
                 while (true) {
@@ -24,26 +24,21 @@ public class ChatClient {
                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                         socket.receive(packet);
                         String msg = new String(packet.getData(), 0, packet.getLength());
-                        System.out.println("📩 " + msg);
-                    } catch (IOException e) {
+                        System.out.println(msg);
+                    } catch (Exception e) {
                         e.printStackTrace();
                         break;
                     }
                 }
             });
-
             receiver.start();
 
-            // Luồng gửi tin nhắn
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("Nhập tên của bạn: ");
-            String name = scanner.nextLine();
-
+            // Gửi tin nhắn tới Server
             while (true) {
                 String message = scanner.nextLine();
                 String fullMsg = name + ": " + message;
-                byte[] buffer = fullMsg.getBytes();
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, PORT);
+                byte[] data = fullMsg.getBytes();
+                DatagramPacket packet = new DatagramPacket(data, data.length, serverAddr, SERVER_PORT);
                 socket.send(packet);
             }
 
