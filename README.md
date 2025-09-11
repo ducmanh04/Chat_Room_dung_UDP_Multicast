@@ -20,11 +20,50 @@
 </div>
 
 ## 📖 1. Giới thiệu
-Chat room sử dụng UDP Multicast cho phép nhiều người tham gia cùng một lúc, trong đó một người gửi tin nhắn sẽ được chuyển đến tất cả những người đăng ký cùng một địa chỉ multicast thay vì gửi từng tin nhắn cho từng người. Điều này giúp giảm đáng kể tải cho mạng và máy chủ, đồng thời tạo ra phương thức truyền tải hiệu quả cho các nhóm lớn trên cùng một mạng cục bộ (LAN). 
+Chat Room dùng UDP Multicast là một ứng dụng cho phép nhiều máy tính (hoặc nhiều tiến trình) cùng tham gia vào một “phòng trò chuyện” thông qua cơ chế truyền thông nhóm (multicast).
 
-## 🔧 2. Ngôn ngữ lập trình sử dụng: [![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)](https://www.java.com/)
+Trong mô hình này:
 
-## 🚀 3. Các project đã thực hiện
+Server đóng vai trò quản lý phòng chat, gửi và nhận thông điệp từ nhóm multicast, đồng thời có thể phát tin nhắn đến tất cả Client.
+
+Client là các thành viên tham gia phòng chat, có thể gửi tin nhắn đến nhóm và nhận lại tin nhắn từ các thành viên khác (kể cả từ Server).
+## 🔧 2. Công nghệ và ngôn ngữ lập trình sử dụng
+🔹 Ngôn ngữ lập trình sử dụng
+
+Java
+
+Dùng Java SE (Standard Edition), phiên bản phổ biến (Java 8 trở lên).
+
+Thư viện sử dụng:
+
+java.net.* (UDP, DatagramSocket, MulticastSocket, InetAddress).
+
+javax.swing.* (tạo giao diện đồ họa).
+
+java.awt.* (hỗ trợ bố cục giao diện).
+
+🔹 Môi trường lập trình
+
+IDE: Eclipse IDE (Eclipse IDE for Java Developers).
+
+Hệ điều hành: Windows.
+
+JDK: JDK 17
+
+Project Type: Java Project (trong Eclipse).
+
+## 🚀 3. Hình ảnh các chức năng
+<tr>
+    <p align="center">
+        <img src="docs/Chat_Server.jpg" alt="Ảnh 1" width="800"/>
+    </p>
+    <p align="center">
+        <img src="docs/Nhap_ten.jpg" alt="Ảnh 1" width="800"/>
+    </p>
+    <p align="center">
+        <img src="docs/Chat_Client.jpg" alt="Ảnh 1" width="800"/>
+    </p>
+</tr>
 
 ### [Khoá 16](./docs/projects/K16/README.md)
 
