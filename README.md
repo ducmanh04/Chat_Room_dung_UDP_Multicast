@@ -4,7 +4,7 @@
     </a>
 </h2>
 <h2 align="center">
-   Chat Room dùng UDP Multicast
+   TẠO CHATROOM SỬ DỤNG UDP MULTICAST
 </h2>
 <div align="center">
     <p align="center">
@@ -20,7 +20,7 @@
 </div>
 
 ## 📖 1. Giới thiệu
-Học phần trang bị cho người học những kiến thức nền tảng của lập trình mạng và các kỹ năng cần thiết để thiết kế và cài đặt các ứng dụng mạng và các chuẩn ở mức ứng dụng dựa trên mô hình Client/Server, có sử dụng các giao tiếp chương trình dựa trên Sockets. Kết thúc học phần, sinh viên có thể viết các chương trình ứng dụng mạng với giao thức tầng ứng dụng tự thiết kế.
+Chat room sử dụng UDP Multicast cho phép nhiều người tham gia cùng một lúc, trong đó một người gửi tin nhắn sẽ được chuyển đến tất cả những người đăng ký cùng một địa chỉ multicast thay vì gửi từng tin nhắn cho từng người. Điều này giúp giảm đáng kể tải cho mạng và máy chủ, đồng thời tạo ra phương thức truyền tải hiệu quả cho các nhóm lớn trên cùng một mạng cục bộ (LAN). 
 
 ## 🔧 2. Ngôn ngữ lập trình sử dụng: [![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)](https://www.java.com/)
 
