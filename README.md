@@ -55,13 +55,13 @@ Project Type: Java Project (trong Eclipse).
 ## 🚀 3. Hình ảnh các chức năng
 <tr>
     <p align="center">
-        <img src="docs/Chat_Server.jpg" alt="Ảnh 1" width="800"/>
+        <img src="docs/Chat_Server.png" alt="Ảnh 1" width="800"/>
     </p>
     <p align="center">
-        <img src="docs/Nhap_ten.jpg" alt="Ảnh 1" width="800"/>
+        <img src="docs/Nhap_ten.png" alt="Ảnh 1" width="800"/>
     </p>
     <p align="center">
-        <img src="docs/Chat_Client.jpg" alt="Ảnh 1" width="800"/>
+        <img src="docs/Chat_Client.png" alt="Ảnh 1" width="800"/>
     </p>
 </tr>
 
