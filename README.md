@@ -53,11 +53,24 @@ JDK: JDK 17
 Project Type: Java Project (trong Eclipse).
 
 ## 🚀 3. Hình ảnh các chức năng
-<div style="display: flex; flex-wrap: wrap;">
-    <img src="docs/Chat_Server.png" alt="Ảnh 1" width="800"/>
-    <img src="docs/Nhap_ten.png" alt="Ảnh 1" width="800"/>
-    <img src="docs/Chat_Client.png" alt="Ảnh 1" width="800"/>
-</div>
+<p align="center">
+  <img src="docs/Chat_Server.png" alt="Ảnh 1" width="400"/>
+</p>
+<p align="center">
+  <em>Hình 1: Ảnh giao diện chat Server </em>
+</p>
+<p align="center">
+  <img src="docs/Nhap_ten.png" alt="Ảnh 1" width="400"/>
+</p>
+<p align="center">
+  <em>Hình 2: Ảnh giao diện nhập tên của chat Client</em>
+</p>
+<p align="center">
+  <img src="docs/Chat_Client.png" alt="Ảnh 1" width="400"/>
+</p>
+<p align="center">
+  <em>Hình 3: Ảnh giao diện chat Client</em>
+</p>
 
 ### [Khoá 16](./docs/projects/K16/README.md)
 
