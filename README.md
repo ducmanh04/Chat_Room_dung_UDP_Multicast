@@ -99,4 +99,52 @@ Project Type: Java Project (trong Eclipse).
 2. **Tải mã nguồn**: Sao chép thư mục `src/chatroom` chứa các file:
    - `ChatServer.java`
    - `ChatClient.java`
+  
+  #### Bước 2: Biên dịch mã nguồn
+1. **Mở terminal** và điều hướng đến thư mục chứa mã nguồn
+2. **Biên dịch các file Java**:
+   ```bash
+   javac src/chatroom/*.java
+   ```
+   Hoặc biên dịch từng file riêng lẻ:
+   ```bash
+   javac src/chatroom/ChatServer.java
+   javac src/chatroom/ChatClient.java
+   ```
+
+3. **Kiểm tra kết quả**: Nếu biên dịch thành công, sẽ tạo ra các file `.class` tương ứng.
+
+#### Bước 3: Chạy ứng dụng
+
+**Khởi động Server:**
+```bash
+java src/chatroom.ChatServer
+```
+- Server sẽ khởi động trên port mặc định (5555)
+- Giao diện server sẽ hiển thị, sẵn sàng nhận kết nối từ client
+
+**Khởi động Client:**
+```bash
+java UngDungChat_TCP.ChatClient
+```
+- Mở terminal mới cho mỗi client
+- Nhập tên người dùng khi được yêu cầu (ví dụ: "Mạnh", "Nam", "Minh")
+- Client sẽ kết nối đến server và hiển thị giao diện chat
+
+### 🚀 Sử dụng ứng dụng
+
+1. **Kết nối**: Client tự động kết nối đến server sau khi nhập tên
+2. **Gửi tin nhắn**: Gõ tin nhắn vào ô nhập và nhấn Enter hoặc nút "Gửi"
+3. **Nhận tin nhắn**: Tin nhắn từ các client khác sẽ hiển thị trong khu vực Server
+4. **Ngắt kết nối**: Đóng cửa sổ client hoặc nhấn Ctrl+C để ngắt kết nối
+
+
+
+## Thông tin cá nhân
+**Họ tên**: Đào Đức Mạnh.  
+**Lớp**: CNTT 16-03.  
+**Email**: manhseu2004@gmail.com.
+
+© 2025 AIoTLab, Faculty of Information Technology, DaiNam University. All rights reserved.
+
 ---
