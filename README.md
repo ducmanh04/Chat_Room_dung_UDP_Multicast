@@ -75,7 +75,7 @@ Project Type: Java Project (trong Eclipse).
   <img src="docs/Chat_Box.png" alt="Ảnh 1" width="400"/>
 </p>
 <p align="center">
-  <em>Hình 4: Ảnh giao diện tin nhắn qua</em>
+  <em>Hình 4: Ảnh giao diện 1 người khác tham gia nhắn tin</em>
 </p>
 
 ## 📝 4. Hướng dẫn cài đặt và sử dụng
