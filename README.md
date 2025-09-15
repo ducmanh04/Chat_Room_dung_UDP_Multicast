@@ -72,7 +72,7 @@ Project Type: Java Project (trong Eclipse).
   <em>Hình 3: Ảnh giao diện chat Client</em>
 </p>
 <p align="center">
-  <img src="docs/Chat_Box.png" alt="Ảnh 1" width="400"/>
+  <img src="docs/Chat.png" alt="Ảnh 1" width="800"/>
 </p>
 <p align="center">
   <em>Hình 4: Ảnh giao diện 1 người khác tham gia nhắn tin</em>
