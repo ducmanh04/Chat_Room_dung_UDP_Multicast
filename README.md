@@ -71,11 +71,32 @@ Project Type: Java Project (trong Eclipse).
 <p align="center">
   <em>Hình 3: Ảnh giao diện chat Client</em>
 </p>
+<p align="center">
+  <img src="docs/Chat_Box.png" alt="Ảnh 1" width="400"/>
+</p>
+<p align="center">
+  <em>Hình 4: Ảnh giao diện tin nhắn qua</em>
+</p>
 
-### [Khoá 16](./docs/projects/K16/README.md)
+## 📝 4. Hướng dẫn cài đặt và sử dụng
 
-## 📝 4. License
+### 🔧 Yêu cầu hệ thống
 
-© 2025 AIoTLab, Faculty of Information Technology, DaiNam University. All rights reserved.
+- **Java Development Kit (JDK)**: Phiên bản 8 trở lên
+- **Hệ điều hành**: Windows, macOS, hoặc Linux
+- **Môi trường phát triển**: IDE (IntelliJ IDEA, Eclipse, VS Code) hoặc terminal/command prompt
+- **Bộ nhớ**: Tối thiểu 512MB RAM
+- **Dung lượng**: Khoảng 10MB cho mã nguồn và file thực thi
 
+### Bước 1: Chuẩn bị môi trường
+1. **Kiểm tra Java**: Mở terminal/command prompt và chạy:
+   ```bash
+   java -version
+   javac -version
+   ```
+   Đảm bảo cả hai lệnh đều hiển thị phiên bản Java JDK 17 trở lên.
+
+2. **Tải mã nguồn**: Sao chép thư mục `src/chatroom` chứa các file:
+   - `ChatServer.java`
+   - `ChatClient.java`
 ---
