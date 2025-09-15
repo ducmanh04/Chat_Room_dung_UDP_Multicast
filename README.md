@@ -24,9 +24,9 @@ Chat Room dùng UDP Multicast là một ứng dụng cho phép nhiều máy tín
 
 Trong mô hình này:
 
-Server đóng vai trò quản lý phòng chat, gửi và nhận thông điệp từ nhóm multicast, đồng thời có thể phát tin nhắn đến tất cả Client.
+Server đóng vai trò quản lý phòng chat, gửi và nhận thông điệp từ nhóm multicast.
 
-Client là các thành viên tham gia phòng chat, có thể gửi tin nhắn đến nhóm và nhận lại tin nhắn từ các thành viên khác (kể cả từ Server).
+Client là các thành viên tham gia phòng chat, có thể gửi tin nhắn đến nhóm và nhận lại tin nhắn từ các thành viên khác.
 ## 🔧 2. Công nghệ và ngôn ngữ lập trình sử dụng
 🔹 Ngôn ngữ lập trình sử dụng
 
@@ -34,21 +34,13 @@ Java
 
 Dùng Java SE (Standard Edition), phiên bản phổ biến (Java 8 trở lên).
 
-Thư viện sử dụng:
-
-java.net.* (UDP, DatagramSocket, MulticastSocket, InetAddress).
-
-javax.swing.* (tạo giao diện đồ họa).
-
-java.awt.* (hỗ trợ bố cục giao diện).
-
 🔹 Môi trường lập trình
 
 IDE: Eclipse IDE (Eclipse IDE for Java Developers).
 
 Hệ điều hành: Windows.
 
-JDK: JDK 17
+JDK: Cần cài Java Development Kit (JDK 8 hoặc JDK 17).
 
 Project Type: Java Project (trong Eclipse).
 
@@ -75,7 +67,7 @@ Project Type: Java Project (trong Eclipse).
   <img src="docs/Chat.png" alt="Ảnh 1" width="800"/>
 </p>
 <p align="center">
-  <em>Hình 4: Ảnh giao diện 1 người khác tham gia nhắn tin</em>
+  <em>Hình 4: Ảnh giao diện 1 người khác tham gia địa chỉ và nhắn tin</em>
 </p>
 
 ## 📝 4. Hướng dẫn cài đặt và sử dụng
@@ -100,45 +92,25 @@ Project Type: Java Project (trong Eclipse).
    - `ChatServer.java`
    - `ChatClient.java`
   
-  #### Bước 2: Biên dịch mã nguồn
+  #### Bước 2: Biên dịch mã nguồn và chạy ứng dụng
 1. **Mở terminal** và điều hướng đến thư mục chứa mã nguồn
 2. **Biên dịch các file Java**:
    ```bash
    javac src/chatroom/*.java
    ```
-   Hoặc biên dịch từng file riêng lẻ:
-   ```bash
-   javac src/chatroom/ChatServer.java
-   javac src/chatroom/ChatClient.java
-   ```
-
-3. **Kiểm tra kết quả**: Nếu biên dịch thành công, sẽ tạo ra các file `.class` tương ứng.
-
-#### Bước 3: Chạy ứng dụng
-
 **Khởi động Server:**
 ```bash
 java src/chatroom.ChatServer
 ```
-- Server sẽ khởi động trên port mặc định (5555)
 - Giao diện server sẽ hiển thị, sẵn sàng nhận kết nối từ client
 
 **Khởi động Client:**
 ```bash
 java UngDungChat_TCP.ChatClient
 ```
-- Mở terminal mới cho mỗi client
-- Nhập tên người dùng khi được yêu cầu (ví dụ: "Mạnh", "Nam", "Minh")
+- Nhập tên người dùng khi được yêu cầu (ví dụ: "Mạnh", "Nam", "Minh") và tên Port, Server mình muốn tạo và tham gia
 - Client sẽ kết nối đến server và hiển thị giao diện chat
-
-### 🚀 Sử dụng ứng dụng
-
-1. **Kết nối**: Client tự động kết nối đến server sau khi nhập tên
-2. **Gửi tin nhắn**: Gõ tin nhắn vào ô nhập và nhấn Enter hoặc nút "Gửi"
-3. **Nhận tin nhắn**: Tin nhắn từ các client khác sẽ hiển thị trong khu vực Server
-4. **Ngắt kết nối**: Đóng cửa sổ client hoặc nhấn Ctrl+C để ngắt kết nối
-
-
+- Người khác có thể tham gia chat miễn sao nhập đúng Port và Server tương ứng
 
 ## Thông tin cá nhân
 **Họ tên**: Đào Đức Mạnh.  
