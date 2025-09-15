@@ -3,78 +3,98 @@ package chatroom;
 import javax.swing.*;
 import java.awt.*;
 import java.net.*;
+import java.util.*;
 
 public class ChatServer extends JFrame {
-    private JTextArea textArea;
-    private JTextField textField;
-    private DatagramSocket socket;  // chỉ để gửi
+    private JTextArea chatArea;
+    private DatagramSocket serverSocket;
+    private MulticastSocket multicastSocket;
     private InetAddress group;
-    private int port = 5555;
+    private int multicastPort = 4446;
+    private int serverPort = 5000; // cổng Server nhận unicast
+    private Set<SocketAddress> clients = new HashSet<>();
 
     public ChatServer() {
-        setTitle("Chat Server (Multicast)");
-        setSize(400, 400);
+        setTitle("💻 Chat Server (Hub)");
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
 
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        JLabel header = new JLabel("Chat Server đang chạy...", SwingConstants.CENTER);
+        header.setFont(new Font("Arial", Font.BOLD, 16));
+        header.setForeground(new Color(30, 144, 255));
+        add(header, BorderLayout.NORTH);
 
-        textField = new JTextField();
-        JButton sendButton = new JButton("Send");
-
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(textField, BorderLayout.CENTER);
-        panel.add(sendButton, BorderLayout.EAST);
-
-        add(scrollPane, BorderLayout.CENTER);
-        add(panel, BorderLayout.SOUTH);
+        chatArea = new JTextArea();
+        chatArea.setEditable(false);
+        chatArea.setFont(new Font("Consolas", Font.PLAIN, 14));
+        chatArea.setBackground(new Color(245, 245, 245));
+        add(new JScrollPane(chatArea), BorderLayout.CENTER);
 
         try {
-            socket = new DatagramSocket(); // để hệ điều hành chọn port gửi
-            group = InetAddress.getByName("230.0.0.1");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        sendButton.addActionListener(e -> sendMessage());
-        textField.addActionListener(e -> sendMessage());
-
-        // Thread nhận tin nhắn
-        new Thread(this::receiveMessages).start();
-    }
-
-    private void sendMessage() {
-        try {
-            String message = "Server: " + textField.getText();
-            byte[] buffer = message.getBytes();
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, port);
-            socket.send(packet);
-            textArea.append(message + "\n");
-            textField.setText("");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void receiveMessages() {
-        try {
+            serverSocket = new DatagramSocket(serverPort);
+            multicastSocket = new MulticastSocket(multicastPort);
             group = InetAddress.getByName("230.0.0.1");
 
-            MulticastSocket msocket = new MulticastSocket(null);
-            msocket.setReuseAddress(true);
-            msocket.bind(new InetSocketAddress(port));
-            msocket.joinGroup(group);
+            // Thread nhận tin từ Client
+            Thread listener = new Thread(() -> {
+                byte[] buffer = new byte[1024];
+                while (true) {
+                    try {
+                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                        serverSocket.receive(packet);
 
-            byte[] buffer = new byte[1024];
-            while (true) {
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                msocket.receive(packet);
-                String msg = new String(packet.getData(), 0, packet.getLength());
-                if (!msg.startsWith("Server:")) {
-                    textArea.append(msg + "\n");
+                        String msg = new String(packet.getData(), 0, packet.getLength());
+                        SocketAddress clientAddr = packet.getSocketAddress();
+
+                        if (msg.startsWith("JOIN:")) {
+                            String username = msg.substring(5);
+                            clients.add(clientAddr);
+                            broadcastSystem("👉 " + username + " đã tham gia. (Hiện có " + clients.size() + " người)");
+                        } else {
+                            handleMessage(msg, clientAddr);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        break;
+                    }
                 }
+            });
+            listener.start();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleMessage(String msg, SocketAddress sender) {
+        chatArea.append(msg + "\n");
+        try {
+            if (clients.size() < 2) {
+                // Gửi riêng lại cho người gửi
+                String notice = "[Hệ thống]: Bạn là người duy nhất trong phòng, tin nhắn sẽ không gửi cho ai.";
+                byte[] buf = notice.getBytes();
+                DatagramPacket noticePacket = new DatagramPacket(buf, buf.length,
+                        ((InetSocketAddress) sender).getAddress(), ((InetSocketAddress) sender).getPort());
+                serverSocket.send(noticePacket);
+            } else {
+                // Phát cho tất cả bằng multicast
+                byte[] buf = msg.getBytes();
+                DatagramPacket multiPacket = new DatagramPacket(buf, buf.length, group, multicastPort);
+                serverSocket.send(multiPacket);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void broadcastSystem(String msg) {
+        chatArea.append("[SYSTEM]: " + msg + "\n");
+        try {
+            byte[] buf = msg.getBytes();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length, group, multicastPort);
+            serverSocket.send(packet);
         } catch (Exception e) {
             e.printStackTrace();
         }

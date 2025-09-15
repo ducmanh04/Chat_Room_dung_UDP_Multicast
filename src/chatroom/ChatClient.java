@@ -2,87 +2,150 @@ package chatroom;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.net.*;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ChatClient extends JFrame {
-    private JTextArea textArea;
-    private JTextField textField;
-    private DatagramSocket socket; // chỉ để gửi
+    private JPanel chatPanel;
+    private JTextField inputField;
+    private JButton sendButton;
+    private String name;
+    private MulticastSocket socket;
     private InetAddress group;
-    private int port = 5555;
-    private String clientName;
+    private int port = 12345;
 
     public ChatClient(String name) {
-        this.clientName = name;
+        this.name = name;
         setTitle("Chat Client - " + name);
-        setSize(400, 400);
+        setSize(400, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        JScrollPane scrollPane = new JScrollPane(textArea);
+        chatPanel = new JPanel();
+        chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
+        chatPanel.setAlignmentY(Component.TOP_ALIGNMENT);
+     // Thêm glue ở cuối
+        chatPanel.add(Box.createVerticalGlue());
 
-        textField = new JTextField();
-        JButton sendButton = new JButton("Send");
+        JScrollPane scrollPane = new JScrollPane(chatPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(textField, BorderLayout.CENTER);
-        panel.add(sendButton, BorderLayout.EAST);
+        inputField = new JTextField();
+        sendButton = new JButton("Gửi");
+        sendButton.setBackground(new Color(59, 130, 246));
+        sendButton.setForeground(Color.white);
+
+        JPanel inputPanel = new JPanel(new BorderLayout());
+        inputPanel.add(inputField, BorderLayout.CENTER);
+        inputPanel.add(sendButton, BorderLayout.EAST);
 
         add(scrollPane, BorderLayout.CENTER);
-        add(panel, BorderLayout.SOUTH);
+        add(inputPanel, BorderLayout.SOUTH);
 
         try {
-            socket = new DatagramSocket(); // để hệ điều hành chọn port gửi
-            group = InetAddress.getByName("230.0.0.1");
+            socket = new MulticastSocket(port);
+            group = InetAddress.getByName("230.0.0.0");
+            socket.joinGroup(group);
+
+            // Thread nhận tin nhắn
+            new Thread(() -> {
+                byte[] buffer = new byte[1024];
+                while (true) {
+                    try {
+                        DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+                        socket.receive(packet);
+                        String received = new String(packet.getData(), 0, packet.getLength());
+
+                        // Tách thông tin: [Tên]:[Nội dung]
+                        String[] parts = received.split(":", 2);
+                        String sender = parts[0];
+                        String msg = parts.length > 1 ? parts[1] : "";
+
+                        appendMessage(sender, msg, sender.equals(name));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+            // Gửi thông báo tham gia
+            sendMessage(name + " đã tham gia chat!");
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        sendButton.addActionListener(e -> sendMessage());
-        textField.addActionListener(e -> sendMessage());
-
-        // Thread nhận tin nhắn
-        new Thread(this::receiveMessages).start();
+        // Sự kiện gửi tin nhắn
+        sendButton.addActionListener(e -> sendMessage(inputField.getText()));
+        inputField.addActionListener(e -> sendMessage(inputField.getText()));
     }
 
-    private void sendMessage() {
+    private void sendMessage(String msg) {
+        if (msg.trim().isEmpty()) return;
         try {
-            String message = clientName + ": " + textField.getText();
-            byte[] buffer = message.getBytes();
+            String fullMsg = name + ":" + msg;
+            byte[] buffer = fullMsg.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, group, port);
             socket.send(packet);
-            textField.setText("");
-        } catch (Exception e) {
+            inputField.setText("");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void receiveMessages() {
-        try {
-            group = InetAddress.getByName("230.0.0.1");
-
-            MulticastSocket msocket = new MulticastSocket(null);
-            msocket.setReuseAddress(true);
-            msocket.bind(new InetSocketAddress(port));
-            msocket.joinGroup(group);
-
-            byte[] buffer = new byte[1024];
-            while (true) {
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                msocket.receive(packet);
-                String msg = new String(packet.getData(), 0, packet.getLength());
-                if (!msg.startsWith(clientName + ":")) {
-                    textArea.append(msg + "\n");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    // Hàm hiển thị tin nhắn
+    private void appendMessage(String sender, String message, boolean isSelf) {
+        // Bong bóng chat
+        JLabel messageLabel;
+        if (isSelf) {
+            messageLabel = new JLabel("<html><div style='padding:6px; background:#3b82f6; color:white; border-radius:8px;'>"
+                    + message + "</div></html>");
+        } else {
+            messageLabel = new JLabel("<html><div style='padding:6px; background:#E0E0E0; border-radius:8px;'>"
+                    + message + "</div></html>");
         }
+
+        // Thời gian
+        String time = new SimpleDateFormat("HH:mm").format(new Date());
+        JLabel timeLabel = new JLabel(time);
+        timeLabel.setFont(new Font("Arial", Font.ITALIC, 10));
+        timeLabel.setForeground(Color.GRAY);
+
+        // Gom message + time theo chiều dọc
+        JPanel bubble = new JPanel();
+        bubble.setLayout(new BoxLayout(bubble, BoxLayout.Y_AXIS));
+        bubble.setOpaque(false);
+        bubble.add(messageLabel);
+        bubble.add(timeLabel);
+
+        // Wrapper canh trái/phải
+        JPanel messageWrapper = new JPanel(new BorderLayout());
+        messageWrapper.setOpaque(false);
+        if (isSelf) {
+            messageWrapper.add(bubble, BorderLayout.EAST);
+        } else {
+            messageWrapper.add(bubble, BorderLayout.WEST);
+        }
+
+        // Thêm vào panel chính
+        chatPanel.add(messageWrapper);
+        chatPanel.add(Box.createVerticalStrut(2)); // khoảng cách nhỏ 2px
+        chatPanel.revalidate();
+        chatPanel.repaint();
+
+        // Auto scroll xuống cuối
+        SwingUtilities.invokeLater(() -> {
+            JScrollBar vertical = ((JScrollPane) chatPanel.getParent().getParent()).getVerticalScrollBar();
+            vertical.setValue(vertical.getMaximum());
+        });
     }
 
     public static void main(String[] args) {
-        String name = JOptionPane.showInputDialog("Nhập tên của bạn");
-        SwingUtilities.invokeLater(() -> new ChatClient(name).setVisible(true));
+        String name = JOptionPane.showInputDialog("Nhập tên:");
+        if (name != null && !name.trim().isEmpty()) {
+            SwingUtilities.invokeLater(() -> new ChatClient(name).setVisible(true));
+        }
     }
 }
