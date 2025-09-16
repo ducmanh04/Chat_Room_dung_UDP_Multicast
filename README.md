@@ -65,10 +65,10 @@ Project Type: Java Project (trong Eclipse).
 </p>
 Khi bấm nút "Đổi phòng" thì giao diện cũng không khác gì hình 1, chỉ là không có phần nhập tên
 <p align="center">
-  <img src="docs/Chat.png" alt="Ảnh 1" width="800"/>
+  <img src="docs/Doi_Phong.png" alt="Ảnh 1" width="800"/>
 </p>
 <p align="center">
-  <em>Hình 3: Ảnh giao diện 1 người khác tham gia địa chỉ và nhắn tin</em>
+  <em>Hình 4: Ảnh giao diện 1 người trong nhóm chat đổi sang phòng chat mới</em>
 </p>
 ## 📝 4. Hướng dẫn cài đặt và sử dụng
 
