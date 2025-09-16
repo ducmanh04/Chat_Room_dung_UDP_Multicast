@@ -22,11 +22,7 @@
 ## 📖 1. Giới thiệu
 Chat Room dùng UDP Multicast là một ứng dụng cho phép nhiều máy tính (hoặc nhiều tiến trình) cùng tham gia vào một “phòng trò chuyện” thông qua cơ chế truyền thông nhóm (multicast).
 
-Trong mô hình này:
-
-Server đóng vai trò quản lý phòng chat, gửi và nhận thông điệp từ nhóm multicast.
-
-Client là các thành viên tham gia phòng chat, có thể gửi tin nhắn đến nhóm và nhận lại tin nhắn từ các thành viên khác.
+Trong mô hình này: các Client là các thành viên tham gia phòng chat, có thể gửi tin nhắn đến nhóm và nhận lại tin nhắn từ các thành viên khác.
 ## 🔧 2. Công nghệ và ngôn ngữ lập trình sử dụng
 🔹 Ngôn ngữ lập trình sử dụng
 
