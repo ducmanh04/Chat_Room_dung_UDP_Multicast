@@ -66,6 +66,7 @@ Khi bấm nút "Đổi phòng" thì giao diện cũng không khác gì hình 1, 
 <p align="center">
   <em>Hình 4: Ảnh giao diện 1 người trong nhóm chat đổi sang phòng chat mới</em>
 </p>
+
 ## 📝 4. Hướng dẫn cài đặt và sử dụng
 
 ### 🔧 Yêu cầu hệ thống
@@ -108,7 +109,7 @@ java UngDungChat_TCP.ChatClient
 - Client sẽ kết nối đến server và hiển thị giao diện chat
 - Người khác có thể tham gia chat miễn sao nhập đúng Port và Server tương ứng
 
-## Thông tin cá nhân
+## 5. Liên hệ
 **Họ tên**: Đào Đức Mạnh.  
 **Lớp**: CNTT 16-03.  
 **Email**: manhseu2004@gmail.com.
