@@ -8,15 +8,16 @@ import java.util.*;
 public class ChatServer extends JFrame {
     private JTextArea chatArea;
     private DatagramSocket serverSocket;
-    private MulticastSocket multicastSocket;
     private InetAddress group;
     private int multicastPort = 4446;
     private int serverPort = 5000; // cổng Server nhận unicast
-    private Set<SocketAddress> clients = new HashSet<>();
+
+    // Lưu username theo địa chỉ client
+    private Map<SocketAddress, String> clients = new HashMap<>();
 
     public ChatServer() {
         setTitle("💻 Chat Server (Hub)");
-        setSize(500, 400);
+        setSize(600, 450);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
@@ -33,7 +34,6 @@ public class ChatServer extends JFrame {
 
         try {
             serverSocket = new DatagramSocket(serverPort);
-            multicastSocket = new MulticastSocket(multicastPort);
             group = InetAddress.getByName("230.0.0.1");
 
             // Thread nhận tin từ Client
@@ -49,8 +49,21 @@ public class ChatServer extends JFrame {
 
                         if (msg.startsWith("JOIN:")) {
                             String username = msg.substring(5);
-                            clients.add(clientAddr);
-                            broadcastSystem("👉 " + username + " đã tham gia. (Hiện có " + clients.size() + " người)");
+
+                            // Gửi danh sách hiện tại cho client mới
+                            sendMemberList(clientAddr);
+
+                            // Thêm client vào danh sách
+                            clients.put(clientAddr, username);
+
+                            // Thông báo cho tất cả
+                            String time = new java.text.SimpleDateFormat("HH:mm:ss").format(new java.util.Date());
+                            String notice = "👉 " + username + " đã tham gia từ " 
+                                    + ((InetSocketAddress) clientAddr).getAddress().getHostAddress() 
+                                    + ":" + ((InetSocketAddress) clientAddr).getPort() 
+                                    + " lúc " + time + ". (Hiện có " + clients.size() + " người)";
+                            broadcastSystem(notice);
+
                         } else {
                             handleMessage(msg, clientAddr);
                         }
@@ -68,22 +81,35 @@ public class ChatServer extends JFrame {
         }
     }
 
+    // Gửi danh sách thành viên cho client mới
+    private void sendMemberList(SocketAddress newClient) {
+        try {
+            if (clients.isEmpty()) return;
+
+            StringBuilder sb = new StringBuilder("__MEMBERLIST__:");
+            for (String user : clients.values()) {
+                sb.append(user).append(",");
+            }
+
+            byte[] buf = sb.toString().getBytes();
+            DatagramPacket packet = new DatagramPacket(
+                    buf, buf.length,
+                    ((InetSocketAddress) newClient).getAddress(),
+                    ((InetSocketAddress) newClient).getPort()
+            );
+            serverSocket.send(packet);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void handleMessage(String msg, SocketAddress sender) {
         chatArea.append(msg + "\n");
         try {
-            if (clients.size() < 2) {
-                // Gửi riêng lại cho người gửi
-                String notice = "[Hệ thống]: Bạn là người duy nhất trong phòng, tin nhắn sẽ không gửi cho ai.";
-                byte[] buf = notice.getBytes();
-                DatagramPacket noticePacket = new DatagramPacket(buf, buf.length,
-                        ((InetSocketAddress) sender).getAddress(), ((InetSocketAddress) sender).getPort());
-                serverSocket.send(noticePacket);
-            } else {
-                // Phát cho tất cả bằng multicast
-                byte[] buf = msg.getBytes();
-                DatagramPacket multiPacket = new DatagramPacket(buf, buf.length, group, multicastPort);
-                serverSocket.send(multiPacket);
-            }
+            byte[] buf = msg.getBytes();
+            DatagramPacket multiPacket = new DatagramPacket(buf, buf.length, group, multicastPort);
+            serverSocket.send(multiPacket);
         } catch (Exception e) {
             e.printStackTrace();
         }

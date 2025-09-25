@@ -33,8 +33,6 @@ public class ChatClient extends JFrame {
         // ====== Chat panel ======
         chatPanel = new JPanel();
         chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
-        chatPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
 
         JScrollPane chatScroll = new JScrollPane(chatPanel);
         chatScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -87,12 +85,25 @@ public class ChatClient extends JFrame {
                             if (!participantsModel.contains(sender)) {
                                 participantsModel.addElement(sender);
                             }
-                            appendMessage("🔵 " + sender + " tham gia phòng", "", false);
-                        } else if (msg.equals("__LEAVE__")) {
-                            participantsModel.removeElement(sender);
-                            appendMessage("🔴 " + sender + " rời phòng", "", false);
-                        } else {
-                            appendMessage(sender, msg, sender.equals(name));
+                            appendMessage("🔵 [SYSTEM] " + sender + " đã tham gia nhóm", "", false);
+
+                            if (!sender.equals(name)) {
+                                sendMessage("__EXIST__");
+                            }
+                        }
+                        else if (msg.equals("__EXIST__")) {
+                            if (!participantsModel.contains(sender)) {
+                                participantsModel.addElement(sender);
+                            }
+                        }
+                        else if (msg.equals("__LEAVE__")) {
+                            participantsModel.removeElement(sender); // 🔹 Xóa tên người rời đi
+                            appendMessage("🔴 [SYSTEM] " + sender + " đã rời khỏi nhóm", "", false);
+                        }
+                        else {
+                            // 🔹 Đây là tin nhắn chat bình thường
+                            boolean isSelf = sender.equals(name);
+                            appendMessage(sender, msg, isSelf);
                         }
                     } catch (IOException e) {
                         break;
@@ -147,6 +158,14 @@ public class ChatClient extends JFrame {
             }
             // Nếu Cancel thì không làm gì, vẫn ở phòng cũ
         });
+
+
+        // Khi đóng cửa sổ → gửi thông báo rời
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                sendMessage("__LEAVE__");
+            }
+        });
     }
 
     private void sendMessage(String msg) {
@@ -194,8 +213,7 @@ public class ChatClient extends JFrame {
         }
 
         chatPanel.add(messageWrapper);
-        chatPanel.add(Box.createVerticalStrut(5));
-        chatPanel.add(Box.createVerticalGlue());
+        chatPanel.add(Box.createVerticalStrut(2));
         chatPanel.revalidate();
         chatPanel.repaint();
 
