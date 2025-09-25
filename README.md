@@ -59,7 +59,7 @@ Project Type: Java Project (trong Eclipse).
 <p align="center">
   <em>Hình 3: Ảnh giao diện những người khác tham gia phòng và nhắn tin</em>
 </p>
-Khi bấm nút "Đổi phòng" thì giao diện cũng không khác gì hình 1, chỉ là không có phần nhập tên
+Khi bấm nút "Đổi phòng" thì giao diện cũng như hình 1, nhưng sẽ chỉ có phần nhập Server và Port
 <p align="center">
   <img src="docs/Doi_Phong.png" alt="Ảnh 1" width="800"/>
 </p>
