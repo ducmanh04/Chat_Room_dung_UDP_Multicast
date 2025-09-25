@@ -45,13 +45,13 @@ Project Type: Java Project (trong Eclipse).
   <img src="docs/Nhap_ten.png" alt="Ảnh 1" width="400"/>
 </p>
 <p align="center">
-  <em>Hình 1: Ảnh giao diện nhập tên của chat</em>
+  <em>Hình 1: Giao diện nhập tên của người tham gia phòng chat</em>
 </p>
 <p align="center">
   <img src="docs/Chat_Client1.png" alt="Ảnh 1" width="400"/>
 </p>
 <p align="center">
-  <em>Hình 2: Ảnh giao diện chat Client</em>
+  <em>Hình 2: Giao diện phòng chat sử dụng UDP Multicast</em>
 </p>
 <p align="center">
   <img src="docs/Chat.png" alt="Ảnh 1" width="800"/>
