@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class ChatClient extends JFrame {
+
     private JPanel chatPanel;
     private JTextField inputField;
     private JButton sendButton, switchRoomButton;
@@ -25,36 +26,37 @@ public class ChatClient extends JFrame {
         this.port = port;
         this.serverAddress = serverAddress;
 
-        setTitle("Chat Client - " + name + " @" + serverAddress + ":" + port);
-        setSize(600, 500);
+        setTitle("🌈 Chat Client - " + name + " @" + serverAddress + ":" + port);
+        setSize(650, 520);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-     // ====== Gradient background cho toàn frame ======
         setContentPane(new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
                 GradientPaint gp = new GradientPaint(
-                        0, 0, Color.decode("#FFFF99"),  // vàng nhạt
-                        getWidth(), getHeight(), Color.decode("#87CEFA")); // xanh dương nhạt
+                        0, 0, Color.decode("#FFFFCC"),
+                        getWidth(), getHeight(), Color.decode("#99FF99")
+                );
                 g2d.setPaint(gp);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
             }
         });
+
         setLayout(new BorderLayout());
 
         // ====== Chat panel ======
         chatPanel = new JPanel();
         chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
-        chatPanel.setOpaque(false); // <- trong suốt
+        chatPanel.setOpaque(false);
 
         JScrollPane chatScroll = new JScrollPane(chatPanel);
         chatScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         chatScroll.setBorder(BorderFactory.createTitledBorder("💬 Nội dung chat"));
-        chatScroll.setOpaque(false); 
-        chatScroll.getViewport().setOpaque(false); // <- cho viewport trong suốt
+        chatScroll.setOpaque(false);
+        chatScroll.getViewport().setOpaque(false);
 
         // ====== Input + Buttons ======
         inputField = new JTextField();
@@ -72,11 +74,11 @@ public class ChatClient extends JFrame {
         switchRoomButton.setFocusPainted(false);
 
         JPanel inputPanel = new JPanel(new BorderLayout());
-        inputPanel.setOpaque(false); // <- trong suốt
+        inputPanel.setOpaque(false);
         inputPanel.add(inputField, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 0));
-        buttonPanel.setOpaque(false); // <- trong suốt
+        buttonPanel.setOpaque(false);
         buttonPanel.add(sendButton);
         buttonPanel.add(switchRoomButton);
 
@@ -84,8 +86,9 @@ public class ChatClient extends JFrame {
 
         // ====== Participants list ======
         participantsList.setBorder(BorderFactory.createTitledBorder("👥 Người tham gia"));
-        participantsList.setBackground(new Color(0,0,0,0)); // nền trong suốt
+        participantsList.setOpaque(false);
         participantsList.setFont(new Font("Arial", Font.PLAIN, 13));
+        participantsList.setBackground(new Color(0, 0, 0, 0));
 
         JScrollPane participantsScroll = new JScrollPane(participantsList);
         participantsScroll.setPreferredSize(new Dimension(160, 0));
@@ -96,7 +99,6 @@ public class ChatClient extends JFrame {
         add(chatScroll, BorderLayout.CENTER);
         add(inputPanel, BorderLayout.SOUTH);
         add(participantsScroll, BorderLayout.EAST);
-
 
         try {
             socket = new MulticastSocket(port);
@@ -110,8 +112,8 @@ public class ChatClient extends JFrame {
                     try {
                         DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
                         socket.receive(packet);
-                        String received = new String(packet.getData(), 0, packet.getLength());
 
+                        String received = new String(packet.getData(), 0, packet.getLength());
                         String[] parts = received.split(":", 2);
                         String sender = parts[0];
                         String msg = parts.length > 1 ? parts[1] : "";
@@ -125,18 +127,17 @@ public class ChatClient extends JFrame {
                             if (!sender.equals(name)) {
                                 sendMessage("__EXIST__");
                             }
-                        }
-                        else if (msg.equals("__EXIST__")) {
+
+                        } else if (msg.equals("__EXIST__")) {
                             if (!participantsModel.contains(sender)) {
                                 participantsModel.addElement(sender);
                             }
-                        }
-                        else if (msg.equals("__LEAVE__")) {
-                            participantsModel.removeElement(sender); // 🔹 Xóa tên người rời đi
+
+                        } else if (msg.equals("__LEAVE__")) {
+                            participantsModel.removeElement(sender);
                             appendMessage("🔴 [SYSTEM] " + sender + " đã rời khỏi nhóm", "", false);
-                        }
-                        else {
-                            // 🔹 Đây là tin nhắn chat bình thường
+
+                        } else {
                             boolean isSelf = sender.equals(name);
                             appendMessage(sender, msg, isSelf);
                         }
@@ -148,6 +149,7 @@ public class ChatClient extends JFrame {
 
             // Gửi thông báo tham gia
             sendMessage("__JOIN__");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -168,7 +170,9 @@ public class ChatClient extends JFrame {
             switchPanel.add(portField);
 
             int result = JOptionPane.showConfirmDialog(
-                    this, switchPanel, "Đổi phòng chat", JOptionPane.OK_CANCEL_OPTION);
+                    this, switchPanel, "Đổi phòng chat",
+                    JOptionPane.OK_CANCEL_OPTION
+            );
 
             if (result == JOptionPane.OK_OPTION) {
                 try {
@@ -183,17 +187,17 @@ public class ChatClient extends JFrame {
 
                     // Tạo cửa sổ phòng mới
                     SwingUtilities.invokeLater(() ->
-                            new ChatClient(name, newServer, newPort).setVisible(true));
+                            new ChatClient(name, newServer, newPort).setVisible(true)
+                    );
 
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(this,
-                            "Lỗi đổi phòng: " + ex.getMessage(),
-                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            this, "Lỗi đổi phòng: " + ex.getMessage(),
+                            "Lỗi", JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
-            // Nếu Cancel thì không làm gì, vẫn ở phòng cũ
         });
-
 
         // Khi đóng cửa sổ → gửi thông báo rời
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -221,11 +225,15 @@ public class ChatClient extends JFrame {
         if (message.isEmpty()) {
             messageLabel = new JLabel(sender); // dùng cho join/leave
         } else if (isSelf) {
-            messageLabel = new JLabel("<html><div style='padding:6px; background:#3b82f6; color:white; border-radius:8px;'>"
-                    + message + "</div></html>");
+            messageLabel = new JLabel(
+                    "<html><div style='padding:6px; background:#3b82f6; color:white; border-radius:8px;'>"
+                            + message + "</div></html>"
+            );
         } else {
-            messageLabel = new JLabel("<html><div style='padding:6px; background:#E0E0E0; border-radius:8px;'>"
-                    + sender + ": " + message + "</div></html>");
+            messageLabel = new JLabel(
+                    "<html><div style='padding:6px; background:#E0E0E0; border-radius:8px;'>"
+                            + sender + ": " + message + "</div></html>"
+            );
         }
 
         String time = new SimpleDateFormat("HH:mm").format(new Date());
@@ -241,6 +249,7 @@ public class ChatClient extends JFrame {
 
         JPanel messageWrapper = new JPanel(new BorderLayout());
         messageWrapper.setOpaque(false);
+
         if (isSelf) {
             messageWrapper.add(bubble, BorderLayout.EAST);
         } else {
@@ -271,8 +280,11 @@ public class ChatClient extends JFrame {
         panel.add(new JLabel("Port:"));
         panel.add(portField);
 
-        int result = JOptionPane.showConfirmDialog(null, panel,
-                "Nhập thông tin để tham gia chat", JOptionPane.OK_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(
+                null, panel,
+                "Nhập thông tin để tham gia chat",
+                JOptionPane.OK_CANCEL_OPTION
+        );
 
         if (result == JOptionPane.OK_OPTION) {
             String name = nameField.getText().trim();
@@ -280,7 +292,9 @@ public class ChatClient extends JFrame {
             int port = Integer.parseInt(portField.getText().trim());
 
             if (!name.isEmpty()) {
-                SwingUtilities.invokeLater(() -> new ChatClient(name, server, port).setVisible(true));
+                SwingUtilities.invokeLater(() ->
+                        new ChatClient(name, server, port).setVisible(true)
+                );
             }
         }
     }
