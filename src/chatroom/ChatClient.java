@@ -30,38 +30,73 @@ public class ChatClient extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+     // ====== Gradient background cho toàn frame ======
+        setContentPane(new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                GradientPaint gp = new GradientPaint(
+                        0, 0, Color.decode("#FFFF99"),  // vàng nhạt
+                        getWidth(), getHeight(), Color.decode("#87CEFA")); // xanh dương nhạt
+                g2d.setPaint(gp);
+                g2d.fillRect(0, 0, getWidth(), getHeight());
+            }
+        });
+        setLayout(new BorderLayout());
+
         // ====== Chat panel ======
         chatPanel = new JPanel();
         chatPanel.setLayout(new BoxLayout(chatPanel, BoxLayout.Y_AXIS));
+        chatPanel.setOpaque(false); // <- trong suốt
 
         JScrollPane chatScroll = new JScrollPane(chatPanel);
         chatScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        chatScroll.setBorder(BorderFactory.createTitledBorder("💬 Nội dung chat"));
+        chatScroll.setOpaque(false); 
+        chatScroll.getViewport().setOpaque(false); // <- cho viewport trong suốt
 
+        // ====== Input + Buttons ======
         inputField = new JTextField();
-        sendButton = new JButton("Gửi");
+        inputField.setFont(new Font("Arial", Font.PLAIN, 14));
+        inputField.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 2));
+
+        sendButton = new JButton("🚀 Gửi");
         sendButton.setBackground(new Color(59, 130, 246));
         sendButton.setForeground(Color.white);
+        sendButton.setFocusPainted(false);
 
-        switchRoomButton = new JButton("Đổi phòng");
+        switchRoomButton = new JButton("🔄 Đổi phòng");
+        switchRoomButton.setBackground(new Color(255, 165, 0));
+        switchRoomButton.setForeground(Color.white);
+        switchRoomButton.setFocusPainted(false);
 
         JPanel inputPanel = new JPanel(new BorderLayout());
+        inputPanel.setOpaque(false); // <- trong suốt
         inputPanel.add(inputField, BorderLayout.CENTER);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 0));
+        buttonPanel.setOpaque(false); // <- trong suốt
         buttonPanel.add(sendButton);
         buttonPanel.add(switchRoomButton);
 
         inputPanel.add(buttonPanel, BorderLayout.EAST);
 
         // ====== Participants list ======
-        participantsList.setBorder(BorderFactory.createTitledBorder("Người tham gia"));
+        participantsList.setBorder(BorderFactory.createTitledBorder("👥 Người tham gia"));
+        participantsList.setBackground(new Color(0,0,0,0)); // nền trong suốt
+        participantsList.setFont(new Font("Arial", Font.PLAIN, 13));
+
         JScrollPane participantsScroll = new JScrollPane(participantsList);
-        participantsScroll.setPreferredSize(new Dimension(150, 0));
+        participantsScroll.setPreferredSize(new Dimension(160, 0));
+        participantsScroll.setOpaque(false);
+        participantsScroll.getViewport().setOpaque(false);
 
         // ====== Layout chính ======
         add(chatScroll, BorderLayout.CENTER);
         add(inputPanel, BorderLayout.SOUTH);
         add(participantsScroll, BorderLayout.EAST);
+
 
         try {
             socket = new MulticastSocket(port);
