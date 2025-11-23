@@ -17,28 +17,38 @@ public class ChatClient extends JFrame {
     private InetAddress group;
     private int port;
     private String serverAddress;
+    private RoomLobby lobby; // Biến tham chiếu đến Lobby
+    private String roomOwner; // [BỔ SUNG] Biến lưu tên chủ phòng hiện tại
+    private JMenuItem giveAdminMenuItem; // [BỔ SUNG] Menu item để trao quyền
 
     private DefaultListModel<String> participantsModel = new DefaultListModel<>();
     private JList<String> participantsList = new JList<>(participantsModel);
+    
+    private final String LOBBY_UPDATE_IP = "230.0.0.250"; // IP Multicast riêng cho thông báo Lobby
+    private final int LOBBY_UPDATE_PORT = 4447; // Port riêng cho thông báo Lobby
 
-    public ChatClient(String name, String serverAddress, int port) {
+    // Constructor đã sửa đổi để nhận 5 tham số (kể cả roomOwner)
+    public ChatClient(String name, String serverAddress, int port, RoomLobby roomLobby, String roomOwner) {
         this.name = name;
         this.port = port;
         this.serverAddress = serverAddress;
-
+        this.lobby = roomLobby;    
+        this.roomOwner = roomOwner; // GÁN CHỦ PHÒNG
+        
         setTitle("🌈 Chat Client - " + name + " @" + serverAddress + ":" + port);
         setSize(650, 520);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        // Tạo Gradient Background
         setContentPane(new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
                 GradientPaint gp = new GradientPaint(
-                        0, 0, Color.decode("#FFFFCC"),
-                        getWidth(), getHeight(), Color.decode("#99FF99")
+                    0, 0, Color.decode("#FFFFCC"),
+                    getWidth(), getHeight(), Color.decode("#99FF99")
                 );
                 g2d.setPaint(gp);
                 g2d.fillRect(0, 0, getWidth(), getHeight());
@@ -95,6 +105,30 @@ public class ChatClient extends JFrame {
         participantsScroll.setOpaque(false);
         participantsScroll.getViewport().setOpaque(false);
 
+        // [BỔ SUNG]: Setup Menu Trao quyền Admin
+        giveAdminMenuItem = new JMenuItem("Trao quyền Chủ phòng (Admin)");
+        JPopupMenu participantMenu = new JPopupMenu();
+        participantMenu.add(giveAdminMenuItem);
+
+        participantsList.setComponentPopupMenu(participantMenu);
+        
+        // Xử lý sự kiện trao quyền
+        giveAdminMenuItem.addActionListener(e -> {
+            String selectedUser = participantsList.getSelectedValue();
+            if (selectedUser == null) return;
+            
+            if (selectedUser.equals(name)) {
+                JOptionPane.showMessageDialog(this, "Bạn đã là chủ phòng.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            if (name.equals(roomOwner)) { // Chỉ chủ phòng mới có thể trao quyền
+                broadcastNewOwner(selectedUser);
+            } else {
+                JOptionPane.showMessageDialog(this, "Bạn không phải là chủ phòng.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+
         // ====== Layout chính ======
         add(chatScroll, BorderLayout.CENTER);
         add(inputPanel, BorderLayout.SOUTH);
@@ -137,6 +171,10 @@ public class ChatClient extends JFrame {
                             participantsModel.removeElement(sender);
                             appendMessage("🔴 [SYSTEM] " + sender + " đã rời khỏi nhóm", "", false);
 
+                        } else if (msg.startsWith("__NEW_OWNER__:")) { // [BỔ SUNG] Xử lý tin nhắn Admin mới
+                            String newOwner = msg.substring(14);
+                            handleNewOwner(newOwner);
+
                         } else {
                             boolean isSelf = sender.equals(name);
                             appendMessage(sender, msg, isSelf);
@@ -158,53 +196,66 @@ public class ChatClient extends JFrame {
         sendButton.addActionListener(e -> sendMessage(inputField.getText()));
         inputField.addActionListener(e -> sendMessage(inputField.getText()));
 
-        // Đổi phòng
+        // Đổi phòng (Quay về Lobby)
         switchRoomButton.addActionListener(e -> {
-            JTextField serverField = new JTextField(serverAddress);
-            JTextField portField = new JTextField(String.valueOf(port));
+            // Gửi rời phòng cũ
+            sendMessage("__LEAVE__");
 
-            JPanel switchPanel = new JPanel(new GridLayout(2, 2));
-            switchPanel.add(new JLabel("Server (IP Multicast):"));
-            switchPanel.add(serverField);
-            switchPanel.add(new JLabel("Port:"));
-            switchPanel.add(portField);
+            // Đóng cửa sổ hiện tại
+            dispose();
 
-            int result = JOptionPane.showConfirmDialog(
-                    this, switchPanel, "Đổi phòng chat",
-                    JOptionPane.OK_CANCEL_OPTION
-            );
-
-            if (result == JOptionPane.OK_OPTION) {
-                try {
-                    String newServer = serverField.getText().trim();
-                    int newPort = Integer.parseInt(portField.getText().trim());
-
-                    // Gửi rời phòng cũ
-                    sendMessage("__LEAVE__");
-
-                    // Đóng cửa sổ hiện tại
-                    dispose();
-
-                    // Tạo cửa sổ phòng mới
-                    SwingUtilities.invokeLater(() ->
-                            new ChatClient(name, newServer, newPort).setVisible(true)
-                    );
-
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(
-                            this, "Lỗi đổi phòng: " + ex.getMessage(),
-                            "Lỗi", JOptionPane.ERROR_MESSAGE
-                    );
-                }
-            }
+            // Quay lại màn hình Lobby
+            SwingUtilities.invokeLater(() -> lobby.setVisible(true));
         });
 
         // Khi đóng cửa sổ → gửi thông báo rời
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent e) {
                 sendMessage("__LEAVE__");
+                // Kiểm tra và thông báo nếu mình là người cuối cùng
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(500); // Đợi nửa giây
+                        // participantsModel.size() == 1 vì tin LEAVE của mình chưa kịp xử lý
+                        if (participantsModel.size() <= 1) { 
+                            sendRoomEmptyNotification();
+                        }
+                    } catch (InterruptedException ex) { }
+                }).start();
             }
         });
+    }
+
+    // [BỔ SUNG] Phát thông báo Admin mới
+    private void broadcastNewOwner(String newOwnerName) {
+        sendMessage("__NEW_OWNER__:" + newOwnerName);
+        
+        // [BỔ SUNG] Gửi thông báo đến Lobby Channel để các cửa sổ Lobby cập nhật
+        sendLobbyUpdate("OWNER:" + serverAddress + ":" + port + ":" + newOwnerName);
+    }
+
+    // [BỔ SUNG] Xử lý khi nhận được thông báo Admin mới
+    private void handleNewOwner(String newOwnerName) {
+        this.roomOwner = newOwnerName;
+        appendMessage("👑 [SYSTEM] " + newOwnerName + " đã trở thành Chủ phòng mới.", "", false);
+    }
+    
+    // [BỔ SUNG] Gửi thông báo phòng trống (REMOVE)
+    private void sendRoomEmptyNotification() {
+        sendLobbyUpdate("REMOVE:" + serverAddress + ":" + port);
+    }
+    
+    // [HÀM MỚI] Gửi tin nhắn đến kênh cập nhật Lobby chung
+    private void sendLobbyUpdate(String updateMsg) {
+        try (MulticastSocket tempSocket = new MulticastSocket()) {
+            InetAddress groupIP = InetAddress.getByName(LOBBY_UPDATE_IP);
+            String fullMsg = "LOBBY_UPDATE:" + updateMsg;
+            byte[] buffer = fullMsg.getBytes();
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, groupIP, LOBBY_UPDATE_PORT);
+            tempSocket.send(packet);
+        } catch (IOException e) {
+            System.err.println("Lỗi gửi Lobby Update: " + e.getMessage());
+        }
     }
 
     private void sendMessage(String msg) {
@@ -226,13 +277,13 @@ public class ChatClient extends JFrame {
             messageLabel = new JLabel(sender); // dùng cho join/leave
         } else if (isSelf) {
             messageLabel = new JLabel(
-                    "<html><div style='padding:6px; background:#3b82f6; color:white; border-radius:8px;'>"
-                            + message + "</div></html>"
+                "<html><div style='padding:6px; background:#3b82f6; color:white; border-radius:8px;'>"
+                + message + "</div></html>"
             );
         } else {
             messageLabel = new JLabel(
-                    "<html><div style='padding:6px; background:#E0E0E0; border-radius:8px;'>"
-                            + sender + ": " + message + "</div></html>"
+                "<html><div style='padding:6px; background:#E0E0E0; border-radius:8px;'>"
+                + sender + ": " + message + "</div></html>"
             );
         }
 
@@ -267,35 +318,8 @@ public class ChatClient extends JFrame {
         });
     }
 
-    public static void main(String[] args) {
-        JTextField nameField = new JTextField();
-        JTextField serverField = new JTextField("230.0.0.0");
-        JTextField portField = new JTextField("12345");
-
-        JPanel panel = new JPanel(new GridLayout(3, 2));
-        panel.add(new JLabel("Tên:"));
-        panel.add(nameField);
-        panel.add(new JLabel("Server (IP Multicast):"));
-        panel.add(serverField);
-        panel.add(new JLabel("Port:"));
-        panel.add(portField);
-
-        int result = JOptionPane.showConfirmDialog(
-                null, panel,
-                "Nhập thông tin để tham gia chat",
-                JOptionPane.OK_CANCEL_OPTION
-        );
-
-        if (result == JOptionPane.OK_OPTION) {
-            String name = nameField.getText().trim();
-            String server = serverField.getText().trim();
-            int port = Integer.parseInt(portField.getText().trim());
-
-            if (!name.isEmpty()) {
-                SwingUtilities.invokeLater(() ->
-                        new ChatClient(name, server, port).setVisible(true)
-                );
-            }
-        }
-    }
+    // XÓA HÀM main CŨ. Hàm main mới sẽ nằm trong RoomLobby.java
+    // public static void main(String[] args) {
+    //     // Mã này bị loại bỏ
+    // }
 }

@@ -71,9 +71,9 @@ public class ChatServer {
 
             byte[] buf = sb.toString().getBytes();
             DatagramPacket packet = new DatagramPacket(
-                    buf, buf.length,
-                    ((InetSocketAddress) newClient).getAddress(),
-                    ((InetSocketAddress) newClient).getPort()
+                buf, buf.length,
+                ((InetSocketAddress) newClient).getAddress(),
+                ((InetSocketAddress) newClient).getPort()
             );
             serverSocket.send(packet);
 
